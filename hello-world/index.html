@@ -59,16 +59,25 @@
                 template: `
                     <form @submit.prevent="handleSubmit">
                         <h1>{{ title }}</h1>
-                        <input type="email" v-model="email" />
-                        <input type="password" v-model="password" />
+                        <p v-for="(str, i) in inputs" :key="i">{{ str }}</p>
+                        <custom-input v-model="email" :label="emailLabel"/>
+                        <custom-input v-model="password" :label="passwordLabel"/>
                         <button>Log in</button>
                     </form>
                 `,
+                components: ['custom-input'],
                 data() {
                     return {
                         title: 'Login Form',
+                        inputs: [
+                            'email',
+                            'password',
+                            'name'
+                        ],
                         email: '',
-                        password: ''
+                        password: '',
+                        emailLabel: 'Email',
+                        passwordLabel: 'Password'
                     }
                 },
                 methods: {
@@ -77,7 +86,31 @@
                     }
                 }
         })
-
+        app.component('custom-input', {
+            template: `
+                <label>
+                    {{ label }}
+                    <input type="text" v-model="inputValue">
+                </label>
+            `,
+            props: ['label', 'modelValue'],
+            computed: {
+                inputValue: {
+                    get() {
+                        return this.modelValue
+                    },
+                    set(value) {
+                        console.log(value);
+                        this.$emit('update:modelValue', value)
+                    }
+                }
+            },
+        //    data() {
+        //        return {
+        //            inputValue: ''
+        //        }
+        //    }
+        })
         app.mount('#app')
     </script>
 </body>
